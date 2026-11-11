@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroPraça Digital - Angola</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { -webkit-tap-highlight-color: transparent; }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 0.75rem;
+      background-color: #022c22;
+    }
+    .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 pb-20">
+
+  <!-- CABEÇALHO -->
+  <header class="bg-emerald-900 text-white sticky top-0 z-40 shadow-md">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-amber-500 p-2 rounded-lg text-emerald-950 font-bold">
+          <i data-lucide="sprout" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-lg leading-tight">AgroPraça Digital</h1>
+            <span class="bg-amber-400 text-emerald-950 text-[10px] font-black px-1.5 py-0.5 rounded">ANGOLA</span>
+          </div>
+          <p class="text-xs text-emerald-200">Canal Direto do Campo Para o Mercado</p>
+        </div>
+      </div>
+      <button onclick="mudarAba('vitrine')" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-emerald-700">
+        <i data-lucide="store" class="w-4 h-4 text-amber-400"></i> Ver Vitrine
+      </button>
+    </div>
+
+    <!-- Navegação Superior -->
+    <div class="max-w-4xl mx-auto px-4 flex border-t border-emerald-800 text-sm">
+      <button onclick="mudarAba('vitrine')" id="btn-tab-vitrine" class="flex-1 py-2.5 text-center font-medium border-b-2 border-transparent text-emerald-200 hover:text-white flex items-center justify-center gap-1.5">
+        <i data-lucide="store" class="w-4 h-4"></i> Vitrine
+      </button>
+      <button onclick="mudarAba('produtor')" id="btn-tab-produtor" class="flex-1 py-2.5 text-center font-medium border-b-2 border-transparent text-emerald-200 hover:text-white flex items-center justify-center gap-1.5">
+        <i data-lucide="plus-circle" class="w-4 h-4"></i> Novo Lote
+      </button>
+      <button onclick="mudarAba('backoffice')" id="btn-tab-backoffice" class="flex-1 py-2.5 text-center font-medium border-b-2 border-amber-400 text-white flex items-center justify-center gap-1.5">
+        <i data-lucide="shield-check" class="w-4 h-4"></i> Backoffice
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-4 space-y-4">
+
+    <!-- BANNER COM VÍDEO EXPLICATIVO -->
+    <div class="bg-gradient-to-r from-emerald-900 to-emerald-950 text-white rounded-2xl p-4 md:p-6 shadow-sm border border-emerald-800">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+        <div class="md:col-span-6 space-y-3">
+          <span class="bg-amber-400 text-emerald-950 text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wider">
+            Vídeo de Apresentação
+          </span>
+          <h2 class="text-xl md:text-2xl font-black leading-tight">
+            Conectando os Campos de Benguela ao Mercado Nacional
+          </h2>
+          <p class="text-xs text-emerald-200 leading-relaxed">
+            Veja em 2 minutos como produtores cadastram lotes de colheita, como a moderação técnica valida a qualidade e como compradores fecham negócios pelo WhatsApp.
+          </p>
+          <div class="flex items-center gap-2 pt-1">
+            <span class="text-[11px] text-amber-300 flex items-center gap-1 font-medium">
+              <i data-lucide="play-circle" class="w-4 h-4 text-amber-400"></i> Demonstração Técnica Agro
+            </span>
+          </div>
+        </div>
+
+        <div class="md:col-span-6">
+          <div class="video-container shadow-xl border border-emerald-700/60 rounded-xl overflow-hidden">
+            <video id="video-apresentacao" controls playsinline preload="metadata" class="w-full h-full">
+              <source src="video.mp4" type="video/mp4">
+              <source src="video.mov" type="video/quicktime">
+              O seu navegador não suporta a reprodução deste vídeo.
+            </video>
+          </div>
+          <div class="flex items-center justify-between mt-1.5 px-1">
+            <p id="video-status" class="text-[10px] text-emerald-300">
+              Dica: Mantenha o ficheiro <b>video.mp4</b> na mesma pasta deste HTML.
+            </p>
+            <label class="text-[10px] text-amber-300 underline cursor-pointer hover:text-amber-200">
+              Selecionar outro vídeo
+              <input type="file" accept="video/mp4,video/quicktime,video/webm" class="hidden" onchange="carregarVideoManual(event)">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. VITRINE PÚBLICA -->
+    <section id="aba-vitrine" class="hidden space-y-4">
+      <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm space-y-3.5">
+        <div>
+          <label class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1.5 flex items-center gap-1.5">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> Estado de Disponibilidade:
+          </label>
+          <div class="grid grid-cols-3 gap-2 text-xs">
+            <button onclick="filtrarDisponibilidade('disponiveis')" id="btn-disp-disponiveis" class="disp-btn py-2 px-2.5 rounded-lg font-bold border text-center transition flex items-center justify-center gap-1.5 bg-emerald-800 text-white border-emerald-800 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-300"></span> Disponíveis
+            </button>
+            <button onclick="filtrarDisponibilidade('todos')" id="btn-disp-todos" class="disp-btn py-2 px-2.5 rounded-lg font-bold border text-center transition flex items-center justify-center gap-1.5 bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100">
+              Ver Todos
+            </button>
+            <button onclick="filtrarDisponibilidade('esgotados')" id="btn-disp-esgotados" class="disp-btn py-2 px-2.5 rounded-lg font-bold border text-center transition flex items-center justify-center gap-1.5 bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100">
+              <span class="w-2 h-2 rounded-full bg-red-500"></span> Esgotados
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 border-t border-gray-100">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 block mb-1">Município / Polo:</label>
+            <select id="filtro-municipio" onchange="renderizarVitrine()" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm font-medium focus:ring-2 focus:ring-emerald-600 outline-none">
+              <option value="todos">Todos os Municípios</option>
+              <option value="Benguela">Benguela</option>
+              <option value="Lobito">Lobito</option>
+              <option value="Catumbela">Catumbela</option>
+              <option value="Chongoroi">Chongoroi</option>
+              <option value="Balombo">Balombo</option>
+              <option value="Caála">Caála</option>
+              <option value="Lubango">Lubango</option>
+              <option value="Humpata">Humpata</option>
+              <option value="Waku Kungo">Waku Kungo</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500 block mb-1">Categoria:</label>
+            <select id="filtro-categoria" onchange="selecionarCategoriaViaSelect(this.value)" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm font-medium focus:ring-2 focus:ring-emerald-600 outline-none">
+              <option value="todas">Todas as Categorias</option>
+              <option value="cereais">Cereais</option>
+              <option value="tuberculos">Tubérculos</option>
+              <option value="horticolas">Hortícolas</option>
+              <option value="frutas">Frutas</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="lista-vitrine" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+
+    <!-- 2. CADASTRO DO PRODUTOR -->
+    <section id="aba-produtor" class="hidden space-y-4">
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+        <h2 class="text-lg font-bold text-gray-900 mb-1 flex items-center gap-2">
+          <i data-lucide="clipboard-plus" class="text-emerald-700"></i> Registar Nova Colheita / Lote
+        </h2>
+        <p class="text-xs text-gray-500 mb-4">Insira os dados do produto para validação técnica.</p>
+
+        <form id="form-lote" onsubmit="salvarNovoLote(event)" class="space-y-3.5 text-sm">
+          <div>
+            <label class="block font-medium mb-1">Nome da Cultura / Produto *</label>
+            <input type="text" id="campo-titulo" required placeholder="Ex: Milho Branco em Grão" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none focus:border-emerald-600">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-medium mb-1">Categoria *</label>
+              <select id="campo-categoria" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none bg-white">
+                <option value="cereais">Cereais</option>
+                <option value="tuberculos">Tubérculos</option>
+                <option value="horticolas">Hortícolas</option>
+                <option value="frutas">Frutas</option>
+                <option value="leguminosas">Leguminosas</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-medium mb-1">Município / Polo *</label>
+              <select id="campo-municipio" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none bg-white">
+                <option value="Benguela">Benguela</option>
+                <option value="Lobito">Lobito</option>
+                <option value="Catumbela">Catumbela</option>
+                <option value="Chongoroi">Chongoroi</option>
+                <option value="Balombo">Balombo</option>
+                <option value="Caála">Caála</option>
+                <option value="Lubango">Lubango</option>
+                <option value="Humpata">Humpata</option>
+                <option value="Waku Kungo">Waku Kungo</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-medium mb-1">Comuna / Localidade / Referência</label>
+            <input type="text" id="campo-localidade" placeholder="Ex: Chongoroi sede, armazém central" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-medium mb-1">Quantidade *</label>
+              <input type="number" id="campo-quantidade" required min="1" placeholder="Ex: 500" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none">
+            </div>
+            <div>
+              <label class="block font-medium mb-1">Unidade *</label>
+              <select id="campo-unidade" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none bg-white">
+                <option value="sacas (50kg)">sacas (50kg)</option>
+                <option value="kg">kg</option>
+                <option value="toneladas">toneladas</option>
+                <option value="caixas">caixas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-medium mb-1">Preço Unitário (Kz) *</label>
+              <input type="number" id="campo-preco" required min="1" placeholder="Ex: 8500" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none">
+            </div>
+            <div>
+              <label class="block font-medium mb-1">Disponibilidade Inicial *</label>
+              <select id="campo-estado" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none bg-white font-medium">
+                <option value="armazem">Disponível em Armazém</option>
+                <option value="campo">Disponível no Campo (Colheita)</option>
+                <option value="esgotado">Esgotado / Indisponível</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-medium mb-1">Produtor / Associação / Fazenda *</label>
+            <input type="text" id="campo-produtor" required placeholder="Ex: Cooperativa Agro-Chongoroi" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none">
+          </div>
+
+          <div>
+            <label class="block font-medium mb-1">Telefone WhatsApp (com +244) *</label>
+            <input type="tel" id="campo-telefone" required placeholder="Ex: +244923000111" class="w-full border border-gray-300 rounded-lg p-2.5 outline-none">
+          </div>
+
+          <button type="submit" class="w-full bg-emerald-800 text-white font-bold py-3 rounded-lg hover:bg-emerald-700 transition">
+            Submeter Lote para Validação
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 3. BACKOFFICE -->
+    <section id="aba-backoffice" class="space-y-4">
+      <div class="grid grid-cols-3 gap-2 text-center text-xs">
+        <div class="bg-white p-3 rounded-xl border border-gray-200">
+          <p class="text-gray-500">Publicados</p>
+          <p id="stat-publicados" class="text-xl font-bold text-emerald-800">0</p>
+        </div>
+        <div class="bg-white p-3 rounded-xl border border-gray-200">
+          <p class="text-gray-500">Esgotados</p>
+          <p id="stat-esgotados" class="text-xl font-bold text-gray-500">0</p>
+        </div>
+        <div class="bg-white p-3 rounded-xl border border-gray-200">
+          <p class="text-gray-500">Pendentes</p>
+          <p id="stat-pendentes" class="text-xl font-bold text-amber-600">0</p>
+        </div>
+      </div>
+
+      <!-- Pendentes -->
+      <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+        <h3 class="font-bold text-amber-900 text-sm flex items-center gap-2 mb-2">
+          <i data-lucide="alert-circle" class="w-4 h-4 text-amber-700"></i> Lotes Aguardando Aprovação
+        </h3>
+        <div id="lista-pendentes" class="space-y-2.5"></div>
+      </div>
+
+      <!-- Gestão Activos -->
+      <div class="bg-white p-4 rounded-xl border border-gray-200">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-bold text-gray-900 text-sm flex items-center gap-2">
+            <i data-lucide="sliders" class="w-4 h-4 text-emerald-700"></i> Gestão de Stocks e Disponibilidade
+          </h3>
+          <span class="text-[11px] text-gray-400">Edição, Alternar e Apagar</span>
+        </div>
+        <div id="lista-gestao" class="space-y-3"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const DADOS_PADRAO = [
+      { id: 1, titulo: "Milho Amarelo Seco", categoria: "cereais", produtor: "Fazenda Kwanza Sul", telefone: "+244912000222", municipio: "Waku Kungo", localidade: "Polo Agroindustrial", preco: 8500, unidade: "sacas (50kg)", quantidade: 400, estado: "armazem", validado: true },
+      { id: 2, titulo: "Batata Rena Fresca", categoria: "tuberculos", produtor: "Coop. Agrícola da Caála", telefone: "+244923000111", municipio: "Caála", localidade: "Sector Cuima", preco: 450, unidade: "kg", quantidade: 3500, estado: "armazem", validado: true },
+      { id: 3, titulo: "Tomate Industrial / Mesa", categoria: "horticolas", produtor: "Assoc. Camponeses Catumbela", telefone: "+244933000333", municipio: "Catumbela", localidade: "Margem do Rio", preco: 6000, unidade: "caixas", quantidade: 0, estado: "esgotado", validado: true }
+    ];
+
+    let lotes = JSON.parse(localStorage.getItem('agropraça_lotes_v4')) || DADOS_PADRAO;
+    let categoriaAtual = 'todas';
+    let filtroDisp = 'disponiveis';
+
+    function salvarDados() {
+      localStorage.setItem('agropraça_lotes_v4', JSON.stringify(lotes));
+      renderizarTudo();
+    }
+
+    function mudarAba(aba) {
+      document.getElementById('aba-vitrine').classList.toggle('hidden', aba !== 'vitrine');
+      document.getElementById('aba-produtor').classList.toggle('hidden', aba !== 'produtor');
+      document.getElementById('aba-backoffice').classList.toggle('hidden', aba !== 'backoffice');
+
+      const abas = ['vitrine', 'produtor', 'backoffice'];
+      abas.forEach(nome => {
+        const btn = document.getElementById(`btn-tab-${nome}`);
+        if(nome === aba) {
+          btn.className = "flex-1 py-2.5 text-center font-medium border-b-2 border-amber-400 text-white flex items-center justify-center gap-1.5";
+        } else {
+          btn.className = "flex-1 py-2.5 text-center font-medium border-b-2 border-transparent text-emerald-200 hover:text-white flex items-center justify-center gap-1.5";
+        }
+      });
+
+      renderizarTudo();
+    }
+
+    function filtrarDisponibilidade(modo) {
+      filtroDisp = modo;
+      const modos = ['disponiveis', 'todos', 'esgotados'];
+      modos.forEach(m => {
+        const btn = document.getElementById(`btn-disp-${m}`);
+        if (m === modo) {
+          btn.className = "disp-btn py-2 px-2.5 rounded-lg font-bold border text-center transition flex items-center justify-center gap-1.5 bg-emerald-800 text-white border-emerald-800 shadow-sm";
+        } else {
+          btn.className = "disp-btn py-2 px-2.5 rounded-lg font-bold border text-center transition flex items-center justify-center gap-1.5 bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100";
+        }
+      });
+      renderizarVitrine();
+    }
+
+    function selecionarCategoriaViaSelect(cat) {
+      categoriaAtual = cat;
+      renderizarVitrine();
+    }
+
+    function alternarEstadoRapido(id) {
+      const lote = lotes.find(l => l.id === id);
+      if(lote) {
+        if(lote.estado === 'esgotado') {
+          lote.estado = 'armazem';
+          if(lote.quantidade === 0) lote.quantidade = 100;
+        } else {
+          lote.estado = 'esgotado';
+        }
+        salvarDados();
+      }
+    }
+
+    // FUNÇÃO PARA APAGAR / ELIMINAR O LOTE
+    function eliminarLote(id) {
+      const lote = lotes.find(l => l.id === id);
+      const nome = lote ? lote.titulo : 'este lote';
+      if(confirm(`Tem a certeza que deseja apagar definitivamente o lote "${nome}"? Não será mais exibido na plataforma.`)) {
+        lotes = lotes.filter(l => l.id !== id);
+        salvarDados();
+      }
+    }
+
+    function gerarLinkWhatsApp(telefone, lote) {
+      const numLimpo = telefone.replace(/\D/g, '');
+      const texto = encodeURIComponent(`Olá, ${lote.produtor}! Vi o vosso lote de ${lote.titulo} (${lote.quantidade} ${lote.unidade}) na AgroPraça Digital (${lote.municipio}) e pretendo negociar.`);
+      return `https://wa.me/${numLimpo}?text=${texto}`;
+    }
+
+    function renderizarVitrine() {
+      const container = document.getElementById('lista-vitrine');
+      const filtroMuni = document.getElementById('filtro-municipio').value;
+
+      const lotesVisiveis = lotes.filter(l => {
+        if (!l.validado) return false;
+        if (filtroDisp === 'disponiveis' && l.estado === 'esgotado') return false;
+        if (filtroDisp === 'esgotados' && l.estado !== 'esgotado') return false;
+
+        const matchMuni = filtroMuni === 'todos' || l.municipio === filtroMuni;
+        const matchCat = categoriaAtual === 'todas' || l.categoria === categoriaAtual;
+        return matchMuni && matchCat;
+      });
+
+      if (lotesVisiveis.length === 0) {
+        container.innerHTML = `<div class="col-span-full p-8 text-center bg-white rounded-xl text-gray-400 font-medium">Nenhum lote disponível neste filtro.</div>`;
+        return;
+      }
+
+      container.innerHTML = lotesVisiveis.map(l => {
+        const isEsgotado = l.estado === 'esgotado';
+        const linkWa = gerarLinkWhatsApp(l.telefone, l);
+
+        let badge = '';
+        if(isEsgotado) {
+          badge = `<span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-red-100 text-red-700">● Esgotado</span>`;
+        } else if(l.estado === 'armazem') {
+          badge = `<span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">● Armazém</span>`;
+        } else {
+          badge = `<span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800">◌ No Campo</span>`;
+        }
+
+        return `
+          <div class="bg-white rounded-xl border ${isEsgotado ? 'border-red-200 opacity-70' : 'border-gray-200'} p-4 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start gap-2 mb-2">
+                ${badge}
+                <span class="text-xs text-gray-500 flex items-center gap-1">
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400"></i> ${l.municipio}
+                </span>
+              </div>
+              <h3 class="font-bold text-gray-900 text-base ${isEsgotado ? 'line-through text-gray-500' : ''}">${l.titulo}</h3>
+              <p class="text-xs text-gray-500 mt-0.5">Produtor: <span class="font-medium text-gray-700">${l.produtor}</span></p>
+
+              <div class="mt-3 py-2 border-y border-gray-100 flex justify-between items-baseline">
+                <div>
+                  <span class="text-xs text-gray-400 block">Preço</span>
+                  <span class="text-lg font-black ${isEsgotado ? 'text-gray-400' : 'text-emerald-800'}">${Number(l.preco).toLocaleString('pt-AO')} Kz</span>
+                  <span class="text-xs text-gray-500">/${l.unidade}</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-xs text-gray-400 block">Disponível</span>
+                  <span class="text-sm font-bold ${isEsgotado ? 'text-red-600' : 'text-gray-800'}">
+                    ${isEsgotado ? '0 ' + l.unidade : Number(l.quantidade).toLocaleString('pt-AO') + ' ' + l.unidade}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 mt-4">
+              <a href="tel:${l.telefone}" class="flex items-center justify-center gap-1.5 py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold transition">
+                <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-700"></i> Ligar
+              </a>
+              ${isEsgotado ? `
+                <button disabled class="flex items-center justify-center gap-1.5 py-2 px-3 bg-gray-200 text-gray-400 rounded-lg text-xs font-bold cursor-not-allowed">
+                  Esgotado
+                </button>
+              ` : `
+                <a href="${linkWa}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-sm transition">
+                  <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp
+                </a>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function salvarNovoLote(e) {
+      e.preventDefault();
+      const novo = {
+        id: Date.now(),
+        titulo: document.getElementById('campo-titulo').value,
+        categoria: document.getElementById('campo-categoria').value,
+        municipio: document.getElementById('campo-municipio').value,
+        localidade: document.getElementById('campo-localidade').value || '',
+        quantidade: Number(document.getElementById('campo-quantidade').value),
+        unidade: document.getElementById('campo-unidade').value,
+        preco: Number(document.getElementById('campo-preco').value),
+        estado: document.getElementById('campo-estado').value,
+        produtor: document.getElementById('campo-produtor').value,
+        telefone: document.getElementById('campo-telefone').value,
+        validado: false
+      };
+
+      lotes.unshift(novo);
+      salvarDados();
+      document.getElementById('form-lote').reset();
+      alert('Lote submetido com sucesso! Valide-o no Backoffice.');
+      mudarAba('backoffice');
+    }
+
+    function renderizarBackoffice() {
+      const listaPendentes = document.getElementById('lista-pendentes');
+      const listaGestao = document.getElementById('lista-gestao');
+
+      const pendentes = lotes.filter(l => !l.validado);
+      const validados = lotes.filter(l => l.validado);
+
+      document.getElementById('stat-publicados').innerText = validados.filter(l => l.estado !== 'esgotado').length;
+      document.getElementById('stat-esgotados').innerText = validados.filter(l => l.estado === 'esgotado').length;
+      document.getElementById('stat-pendentes').innerText = pendentes.length;
+
+      if(pendentes.length === 0) {
+        listaPendentes.innerHTML = `<p class="text-xs text-amber-800">Nenhum lote pendente de validação.</p>`;
+      } else {
+        listaPendentes.innerHTML = pendentes.map(l => `
+          <div class="bg-white p-3 rounded-lg border border-amber-300 flex justify-between items-center text-xs">
+            <div>
+              <p class="font-bold text-gray-900">${l.titulo} (${l.quantidade} ${l.unidade})</p>
+              <p class="text-gray-500">${l.produtor} • ${l.municipio} • ${l.preco} Kz</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="aprovarLote(${l.id})" class="bg-emerald-700 text-white px-2.5 py-1 rounded font-bold hover:bg-emerald-800">Aprovar</button>
+              <button onclick="eliminarLote(${l.id})" class="bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200">Rejeitar</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      listaGestao.innerHTML = validados.map(l => {
+        const isEsgotado = l.estado === 'esgotado';
+        return `
+          <div class="p-3 bg-gray-50 rounded-lg border ${isEsgotado ? 'border-red-200 bg-red-50/20' : 'border-gray-200'} text-xs space-y-2.5">
+            <div class="flex flex-wrap justify-between items-center gap-2">
+              <div>
+                <span class="font-bold text-sm text-gray-900">${l.titulo}</span>
+                <span class="text-gray-400 text-[11px] ml-1">(${l.produtor} - ${l.municipio})</span>
+              </div>
+              
+              <!-- GRUPO DE BOTÕES: ALTERNAR E APAGAR -->
+              <div class="flex items-center gap-2">
+                <button onclick="alternarEstadoRapido(${l.id})" class="px-2.5 py-1 rounded-md font-bold text-xs flex items-center gap-1.5 transition ${isEsgotado ? 'bg-emerald-700 text-white hover:bg-emerald-800' : 'bg-amber-100 text-amber-800 hover:bg-amber-200'}">
+                  <i data-lucide="${isEsgotado ? 'check-circle' : 'ban'}" class="w-3.5 h-3.5"></i>
+                  ${isEsgotado ? 'Reativar (Disponível)' : 'Marcar Esgotado'}
+                </button>
+
+                <!-- BOTÃO APAGAR DEFINITIVO -->
+                <button onclick="eliminarLote(${l.id})" title="Apagar definitivamente da plataforma" class="px-2.5 py-1 rounded-md font-bold text-xs flex items-center gap-1 bg-red-100 text-red-700 hover:bg-red-200 transition">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  Apagar
+                </button>
+              </div>
+            </div>
+
+            <!-- CAMPOS EDITÁVEIS -->
+            <div class="grid grid-cols-3 gap-2 pt-1 border-t border-gray-200/60">
+              <div>
+                <label class="text-[10px] text-gray-500 uppercase block font-semibold">Qtd (${l.unidade})</label>
+                <input type="number" value="${l.quantidade}" onchange="atualizarLote(${l.id}, 'quantidade', this.value)" class="w-full bg-white border border-gray-300 rounded p-1.5 font-bold">
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 uppercase block font-semibold">Preço (Kz)</label>
+                <input type="number" value="${l.preco}" onchange="atualizarLote(${l.id}, 'preco', this.value)" class="w-full bg-white border border-gray-300 rounded p-1.5 font-bold">
+              </div>
+              <div>
+                <label class="text-[10px] text-gray-500 uppercase block font-semibold">Estado</label>
+                <select onchange="atualizarLote(${l.id}, 'estado', this.value)" class="w-full bg-white border border-gray-300 rounded p-1.5 font-medium">
+                  <option value="armazem" ${l.estado === 'armazem' ? 'selected' : ''}>Armazém (Disponível)</option>
+                  <option value="campo" ${l.estado === 'campo' ? 'selected' : ''}>No Campo (A Colher)</option>
+                  <option value="esgotado" ${l.estado === 'esgotado' ? 'selected' : ''}>Esgotado</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function aprovarLote(id) {
+      const lote = lotes.find(l => l.id === id);
+      if(lote) {
+        lote.validado = true;
+        salvarDados();
+      }
+    }
+
+    function atualizarLote(id, campo, valor) {
+      const lote = lotes.find(l => l.id === id);
+      if(lote) {
+        lote[campo] = (campo === 'quantidade' || campo === 'preco') ? Number(valor) : valor;
+        salvarDados();
+      }
+    }
+
+    function renderizarTudo() {
+      renderizarVitrine();
+      renderizarBackoffice();
+    }
+
+    // Diagnóstico e carregamento manual do vídeo
+    const videoEl = document.getElementById('video-apresentacao');
+    const statusEl = document.getElementById('video-status');
+
+    videoEl.addEventListener('error', () => {
+      statusEl.innerHTML = '<span class="text-red-300 font-bold">Erro:</span> "video.mp4" não encontrado ou codec incompatível (use H.264).';
+    }, true);
+
+    function carregarVideoManual(event) {
+      const ficheiro = event.target.files[0];
+      if (!ficheiro) return;
+      videoEl.src = URL.createObjectURL(ficheiro);
+      videoEl.load();
+      videoEl.play();
+      statusEl.innerText = 'A reproduzir: ' + ficheiro.name;
+    }
+
+    renderizarTudo();
+  </script>
+</body>
+</html>
